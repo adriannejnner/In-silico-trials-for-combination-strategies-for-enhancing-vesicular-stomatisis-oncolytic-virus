@@ -77,7 +77,7 @@ N = 0; % Number of viable patients discovered.
 n = 0; %Number of non-viable patients
 M = 200; %Number of desired virtual patients
 
-VirtualMouseParameters = zeros(SizePA,M); %array to save the parameters for each virtual patient
+VirtualPatientParameters = zeros(SizePA,M); %array to save the parameters for each virtual patient
 ResidualGeneratedErrorVector = zeros(1,M+1); % Vector to record the Generated Error
 
 A = repmat(ParameterHomeostasis,[1,100*(M+1)]);
@@ -182,7 +182,7 @@ while N <   M+1
     if 1-ErrorThreshold < ResidualErrorComparison && isempty(find(errorvec>0))==1 %&& gradient>0 %&& LeBoeufMouseDataRelativeErrorVec(end)>50%ResidualErrorComparison < 2.25  %1+ErrorThreshold %Test to see if ResidualGeneratedError/FittedResidualError is acceptable
          N = N+1
          ResidualGeneratedErrorVector(N+1) = ResidualErrorComparison;
-         VirtualMouseParameters(:,N+1) = struct2array(PA)'; %Save the virtual patient parameters
+         VirtualPatientParameters(:,N+1) = struct2array(PA)'; %Save the virtual patient parameters
     else
         Bad_params = [Bad_params; [ResidualErrorComparison Param([1,2,4:9])']];
         n = n+1
@@ -192,9 +192,11 @@ while N <   M+1
 end
 TotalNumberofRuns = N+n
 
+save('Virtual_patient_parameters.mat','VirtualPatientParameters')
+
 %% Create plots
 for ii = 1:M+1
-  	Param = VirtualMouseParameters([1,2,3,4,6,21,22,23,26],ii+1); %load the varied parameters from the virtual patient and update PA.
+  	Param = VirtualPatientParameters([1,2,3,4,6,21,22,23,26],ii+1); %load the varied parameters from the virtual patient and update PA.
     CTest = {Param(1), ... 
           Param(2), ...
           Param(3), ...
